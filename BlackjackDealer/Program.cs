@@ -22,7 +22,7 @@ namespace BlackjackDealer
         // Description: MAKE BETTER
         // Author: Carma Aten
         // Date Created: 11/17/19
-        // Last Modified: 11/18/19
+        // Last Modified: 11/20/19
         // ************************************
 
         static void Main(string[] args)
@@ -40,11 +40,24 @@ namespace BlackjackDealer
         {
             Console.Clear();
             Console.WriteLine();
+            Console.WriteLine("\t\t Welcome to my");
             Console.WriteLine("\t\t" + message);
             Console.WriteLine();
 
             DisplayContinuePrompt("start");
         }
+
+        static void DisplayClosingScreen(string message)
+        {
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("\t\t" + message);
+            Console.WriteLine();
+
+            DisplayContinuePrompt("exit");
+        }
+
+        #endregion
 
         static void DisplayMainMenu()
         {
@@ -54,10 +67,11 @@ namespace BlackjackDealer
             ConsoleColor foregroundColor;
             ConsoleColor backgroundColor;
 
-            string cardDeckInfo = @"Data/cardDeckInfo.txt";
-            string instructions = @"Data/instructions.txt";
+            string cardDeckInfo = @"Data\cardDeckInfo.txt";
+            string instructions = @"Data\instructions.txt";
 
-            // string userResponse;
+            List<PlayingCard> cards = BuildCardDeck(cardDeckInfo);
+
             int userResponse;
             bool runApplication = true;
 
@@ -73,16 +87,16 @@ namespace BlackjackDealer
                 switch (userResponse)
                 {
                     case 1:
-                        DisplayErrorMessage("Under Development RID");
+                        DisplayGame();
                         break;
                     case 2:
-                        DisplayLongGameInstructions(instructions);
+                        DisplayInstructionsMenu(instructions);
                         break;
                     case 3:
-                        DisplayErrorMessage("Under Development RID");
+                        DisplayRulesMenu();
                         break;
                     case 4:
-                        DisplayErrorMessage("Under Development RID");
+                        DisplayPlayerMenu();
                         break;
                     default:
                         break;
@@ -90,7 +104,16 @@ namespace BlackjackDealer
             }
         }
 
-        #region MAIN MENU SCREENS
+        #region PLAY GAME METHODS
+
+        static void DisplayGame()
+        {
+
+        }
+
+        #endregion
+
+        #region INSTRUCTIONS METHODS
 
         /// <summary>
         /// Takes all the text from the instructions.txt file and prints it out on the screen line by line
@@ -111,30 +134,123 @@ namespace BlackjackDealer
             DisplayContinuePrompt("return to the main menu");
         }
 
-        #endregion // MAIN MENU SCREENS
-
-        static void DisplayClosingScreen(string message)
+        static void DisplayInstructionsMenu(string instructions)
         {
-            Console.Clear();
-            Console.WriteLine();
-            Console.WriteLine("\t\t" + message);
-            Console.WriteLine();
+            int userResponse;
+            string instructionsContent = File.ReadAllText(instructions);
+            string[] submenuContent = instructionsContent.Split('|');
+            //string[] submenuLineByLine;
+            //List<string[]> submenuTextByLine = new List<string[]>();
+            bool keepLooping = true;
 
-            DisplayContinuePrompt("exit");
+            //foreach (string line in submenuContent)
+            //{
+            //    submenuLineByLine = line.Split('*');
+            //    submenuTextByLine.Add(submenuLineByLine);
+            //}
+
+            do
+            {
+                DisplayScreenHeader("Instructions");
+
+                userResponse = ConsoleHelper.MultipleChoice(true, "Object of the Game", "Betting", "The Deal", "Getting a Blackjack", "The Play", "The Dealer\'s Play");
+                userResponse += 1; // Imporoving program readability so that the first options is option #1
+                switch (userResponse)
+                {
+                    case 1:
+                        DisplaySubheadingContent("Object of the Game", submenuContent, 0);
+                        break;
+                    case 2:
+                        DisplaySubheadingContent("Betting", submenuContent, 1);
+                        break;
+                    case 3:
+                        DisplaySubheadingContent("The Deal", submenuContent, 2);
+                        break;
+                    case 4:
+                        DisplaySubheadingContent("Getting a Blackjack", submenuContent, 3);
+                        break;
+                    case 5:
+                        DisplaySubheadingContent("The Play", submenuContent, 4);
+                        break;
+                    case 6:
+                        DisplaySubheadingContent("The Dealer\'s Play", submenuContent, 5);
+                        break;
+                    default:
+                        keepLooping = false;
+                        break;
+                }
+            } while (keepLooping);
+
+            Console.WriteLine("--------------------------------------------------------------------------" +
+                              "\nText taken from the Bicycle Cards Website," +
+                              "\nEdited https://bicyclecards.com/how-to-play/blackjack/" +
+                              "\n--------------------------------------------------------------------------");
         }
 
-        #endregion // SCREENS
+        static void DisplaySubheadingContent(string submenuName, string[] submenuContent, int index)
+        {
+            DisplayScreenHeader(submenuName);
+            Console.WriteLine(submenuContent[index].PadRight(2).PadLeft(2));
+            DisplayContinuePrompt("return to instructions");
+            Console.Clear();
+        }
 
+        #endregion
+
+        #region RULES METHODS
+
+        static void DisplayRulesMenu()
+        {
+
+        }
+
+        #endregion
+
+        #region PLAYER METHODS
+
+        static void DisplayPlayerMenu()
+        {
+
+        }
+
+        #endregion
         // MAKE BETTER need better name for region
         #region CARD STUFF
 
-        static (string suit, string rank, int value)[] BuildCardDeck(string cardDeckInfo)
+        static List<PlayingCard> BuildCardDeck(string cardDeckInfo)
         {
-            (string suit, string rank, int value) cardInfo;
+            List<PlayingCard> cards = new List<PlayingCard>();
 
-            // HERE is where I left off
+            string[] cardStrings = File.ReadAllLines(cardDeckInfo);
+            foreach (string card in cardStrings)
+            {
+                string[] cardProperties = card.Split('|');
 
-            return cardInfo;
+                PlayingCard newCard = new PlayingCard();
+
+                Enum.TryParse(cardProperties[0], out PlayingCard.Suit suit);
+                newCard.CardSuit = suit;
+
+                Enum.TryParse(cardProperties[1], out PlayingCard.Rank rank);
+                newCard.CardRank = rank;
+
+                int.TryParse(cardProperties[2], out int value);
+                newCard.CardValue = value;
+
+                cards.Add(newCard);
+            }
+
+            return cards;
+        }
+
+        static void DisplayAllCards(List<PlayingCard> cards)
+        {
+            foreach (PlayingCard card in cards)
+            {
+                Console.WriteLine(card.CardInfo());
+            }
+
+            DisplayContinuePrompt("continue");
         }
 
         #endregion

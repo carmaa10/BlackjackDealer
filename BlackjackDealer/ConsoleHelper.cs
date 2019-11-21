@@ -31,14 +31,14 @@ namespace BlackjackDealer
 
             do
             {
-                Console.Clear();
+                //Console.Clear();
 
                 for (int i = 0; i < options.Length; i++)
                 {
                     Console.SetCursorPosition(startX + (i % optionsPerLine) * spacingPerLine, startY + i / optionsPerLine);
 
                     if (i == currentSelection)
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
 
                     Console.Write(options[i]);
 
