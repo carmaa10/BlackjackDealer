@@ -30,7 +30,7 @@ namespace BlackjackDealer
 
             DisplayWelcomeScreen("Blackjack Dealer");
             DisplayMainMenu();
-            DisplayClosingScreen("Thank you for playing my unoriginal avaerage game!");
+            DisplayClosingScreen("Thank you for playing my unoriginal average game!"); // MAKE BETTER
 
         }
 
@@ -69,11 +69,15 @@ namespace BlackjackDealer
 
             string cardDeckInfo = @"Data\cardDeckInfo.txt";
             string instructions = @"Data\instructions.txt";
+            string defaultRules = @"Data\defaultRules.txt";
 
-            List<PlayingCard> cards = BuildCardDeck(cardDeckInfo);
+            List<PlayingCard> cardDeck = BuildCardDeck(cardDeckInfo);
+            List<PlayingCard> discard = new List<PlayingCard>();
 
             int userResponse;
             bool runApplication = true;
+
+            Random random = new Random();
 
 
 
@@ -83,17 +87,17 @@ namespace BlackjackDealer
                 DisplayScreenHeader("Main Menu");
 
                 userResponse = ConsoleHelper.MultipleChoice(true, "Play Game", "Display Instructions", "Rules", "Players");
-                userResponse += 1; // Imporoving program readability so that the first options is option #1
-                switch (userResponse)
+                //userResponse += 1; // Imporoving program readability so that the first options is option #1
+                switch (userResponse + 1)
                 {
                     case 1:
-                        DisplayGame();
+                        DisplayGame(random, cardDeck, discard);
                         break;
                     case 2:
                         DisplayInstructionsMenu(instructions);
                         break;
                     case 3:
-                        DisplayRulesMenu();
+                        DisplayRulesMenu(defaultRules);
                         break;
                     case 4:
                         DisplayPlayerMenu();
@@ -106,9 +110,26 @@ namespace BlackjackDealer
 
         #region PLAY GAME METHODS
 
-        static void DisplayGame()
+        static void DisplayGame(Random random, List<PlayingCard> cardDeck, List<PlayingCard> discard)
         {
+            PlayingCard drawnCard;
 
+            DisplayScreenHeader("Blackjack");
+
+
+
+            DisplayContinuePrompt("exit");
+        }
+
+        static PlayingCard DrawCard(Random random, List<PlayingCard> cardDeck, List<PlayingCard> discard)
+        {
+            PlayingCard drawnCard;
+
+            int randomNumber = random.Next(cardDeck.Count());
+
+            drawnCard = cardDeck[randomNumber];
+
+            return drawnCard;
         }
 
         #endregion
@@ -199,7 +220,69 @@ namespace BlackjackDealer
 
         #region RULES METHODS
 
-        static void DisplayRulesMenu()
+        static void DisplayRulesMenu(string defaultRules)
+        {
+            DisplayScreenHeader("Rules");
+
+            List<string> allRules = GetRules(defaultRules);
+
+            bool keepLooping = true;
+
+            int userResponse;
+
+            userResponse = ConsoleHelper.MultipleChoice(true, "View Rules", "Modify Rules");
+            // userResponse += 1;
+            do
+            {
+                switch (userResponse + 1)
+                {
+                    case 1:
+                        DisplayViewRules(allRules);
+                        break;
+
+                    case 2:
+                        DisplayModifyRules();
+                        break;
+
+                    default:
+                        keepLooping = false;
+                        break;
+                }
+            } while (keepLooping);
+        }
+
+        static List<string> GetRules(string defaultRules)
+        {
+            string[] rulesTextArray = File.ReadAllLines(defaultRules);
+            List<string> allRules = new List<string>();    
+
+            foreach (string rule in rulesTextArray)
+            {
+                string[] individualRule = rule.Split('*');
+                foreach (string finalRule in individualRule)
+                {
+                    string[] finalRuleSplit = finalRule.Split('|');
+
+                    allRules.Add(finalRuleSplit[0]);
+                }
+            }
+
+            return allRules; 
+        }
+
+        static void DisplayViewRules(List<string> allRules)
+        {
+            DisplayScreenHeader("Rules");
+
+            foreach (string rule in allRules)
+            {
+                Console.WriteLine($"\t{rule}");
+            }
+
+            DisplayContinuePrompt("exit");
+        }
+
+        static void DisplayModifyRules()
         {
 
         }

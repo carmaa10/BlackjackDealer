@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 // ************************************************************
 // Class taken from user Manfred Radlwimmer on Stack Overflow
-// Adapted to fit my needs
+// Modified
 // https://stackoverflow.com/a/46909420
 // Used to make a multiple choice highlighted menu with enter 
-// to select
+// to select and escape to exit
 // ************************************************************
 
 namespace BlackjackDealer
