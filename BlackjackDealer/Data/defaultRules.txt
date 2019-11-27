@@ -8,7 +8,7 @@ is the highest hand, consisting of an ace and any 10-point card, and it outranks
 21-point hands|false 
 *
 After the players have bet, the dealer will give two cards to each player and two cards to itself. 
-Players can only see one of the cards|false 
+Players can only see one of the cards|false
 *
 If the dealer has a ten or an ace showing, it will check to see if the second card is an ace or a 
 ten|false 

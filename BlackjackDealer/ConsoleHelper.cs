@@ -16,12 +16,12 @@ namespace BlackjackDealer
 {
     class ConsoleHelper
     {
-        public static int MultipleChoice(bool canCancel, params string[] options)
+        public static int MultipleChoice(bool canCancel, int optionsPerLine, int yOffset, int xOffset, params string[] options)
         {
-            const int startX = 8;
-            const int startY = 4;
-            const int optionsPerLine = 1;
-            const int spacingPerLine = 14;
+            int startX = 8 + xOffset;
+            int startY = 4 + yOffset;
+            // const int optionsPerLine = 1;
+            const int spacingPerLine = 25;
 
             int currentSelection = 0;
 
