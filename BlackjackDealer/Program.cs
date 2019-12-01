@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 // NOTES TO ME TO DELETE WHEN TURN IN
 // If any of my search terms are still in the program take care of them then delete this
@@ -132,7 +133,6 @@ namespace BlackjackDealer
                     cardDeck.AddRange(cardDeckTemp);
                 }
             }
-            
 
             DisplayScreenHeader("Blackjack");
 
@@ -140,9 +140,15 @@ namespace BlackjackDealer
             // asking the user if they would like to see their modifiable rules, to be sure. 
             AskAboutDisplayModifiedRules(modifiableRules);
 
+            DisplayPlayerScreen(cardDeck, discard, random);
+
             DisplayContinuePrompt("exit");
         }
 
+        /// <summary>
+        /// Asks the user if they want to see the modified rules prior to playing
+        /// </summary>
+        /// <param name="modifiableRules">the tuple of rules that can be modified</param>
         static void AskAboutDisplayModifiedRules((int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             int userResponse;
@@ -155,13 +161,12 @@ namespace BlackjackDealer
                     DisplayModifiedRules(modifiableRules);
 
                     Console.WriteLine("Are these rules okay?");
-                    userResponse = ConsoleHelper.MultipleChoice(false, 2, 0, 0, "Yes", "No");
+                    userResponse = ConsoleHelper.MultipleChoice(false, 2, 4, 14, "Yes", "No");
                     if (userResponse == 1)
                     {
                         DisplayModifyRules(modifiableRules);
                     }
 
-                    DisplayContinuePrompt("RID");
                     break;
 
                 case 2:
@@ -172,9 +177,14 @@ namespace BlackjackDealer
             }
         }
 
-        static void DisplayPlayerScreen()
+        static void DisplayPlayerScreen(List<PlayingCard> cardDeck, List<PlayingCard> discard, Random random)
         {
+            PlayingCard drawnCard;
+            drawnCard = DrawCard(random, cardDeck, discard);
 
+            DisplayScreenHeader("Player screen");
+
+            DisplayContinuePrompt("continue");
         }
 
         static void DisplayLost()
@@ -197,8 +207,6 @@ namespace BlackjackDealer
         /// Takes all the text from the instructions.txt file and prints it out on the screen line by line
         /// </summary>
         /// <param name="instructions">The file path for the instructions.txt file</param>
-        // IDEAS
-        // * Have menu for everything other than object of game -- use an array in an array??
         static void DisplayLongGameInstructions(string instructions)
         {
             Console.Clear();
@@ -268,6 +276,12 @@ namespace BlackjackDealer
             } while (keepLooping);
         }
 
+        /// <summary>
+        /// Displays the text for the selected instruction
+        /// </summary>
+        /// <param name="submenuName">the name of the instruction</param>
+        /// <param name="submenuContent">a list of the in depth text to be written out</param>
+        /// <param name="index">used to access the specific item in the submenuContent list</param>
         static void DisplaySubheadingContent(string submenuName, string[] submenuContent, int index)
         {
             DisplayScreenHeader(submenuName);
@@ -312,6 +326,11 @@ namespace BlackjackDealer
             } while (keepLooping);
         }
 
+        /// <summary>
+        /// retrieves the rules from their text file, defaultRules.txt
+        /// </summary>
+        /// <param name="defaultRules">the path for the text file</param>
+        /// <returns>a list of all the rules properly taken apart to be written on the screen</returns>
         static List<string> GetRules(string defaultRules)
         {
             string[] rulesTextArray = File.ReadAllLines(defaultRules);
@@ -331,6 +350,10 @@ namespace BlackjackDealer
             return allRules; 
         }
 
+        /// <summary>
+        /// writes out and formats all of the rules for the game
+        /// </summary>
+        /// <param name="allRules">takes the list of rules that can be generated with the GetRules method</param>
         static void DisplayViewRules(List<string> allRules)
         {
             DisplayScreenHeader("Rules");
@@ -343,6 +366,10 @@ namespace BlackjackDealer
             DisplayContinuePrompt("exit");
         }
 
+        /// <summary>
+        /// lets the user change a few specific rules
+        /// </summary>
+        /// <param name="modifiableRules">a tuple that hold the rules that can be modified</param>
         static void DisplayModifyRules((int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             bool validResponse = false;
@@ -357,16 +384,16 @@ namespace BlackjackDealer
             Console.Write("\t");
             RepeatCharacter(20, "-");
             Console.WriteLine();
-            Console.WriteLine($"\tNumber of decks: {modifiableRules.numberDecks}");
-            Console.WriteLine($"\tStarting cash: ${modifiableRules.startingMoney}");
-            Console.WriteLine($"\tNumber Rounds: {modifiableRules.numberRounds}");
+            Console.WriteLine($"\t Number of decks: {modifiableRules.numberDecks}");
+            Console.WriteLine($"\t   Starting cash: ${modifiableRules.startingMoney}");
+            Console.WriteLine($"\tNumber of Rounds: {modifiableRules.numberRounds}");
             if (modifiableRules.bettingStyle == Dealer.BettingStyle.everyManForHimself)
             {
-                Console.WriteLine("\tBetting Style: Every Man For Himself");
+                Console.WriteLine("\t   Betting Style: Every Man For Himself");
             }
             else if (modifiableRules.bettingStyle == Dealer.BettingStyle.threeMusketeers)
             {
-                Console.WriteLine("\tBetting Style: Three Musketeers");
+                Console.WriteLine("\t   Betting Style: Three Musketeers");
             }
 
             Console.WriteLine();
@@ -375,9 +402,9 @@ namespace BlackjackDealer
             RepeatCharacter(20, "-");
             Console.WriteLine();
 
+            Console.Write("\t Number of decks: ");
             do
             {
-                Console.Write("\tNumber of decks: ");
                 couldParse = int.TryParse(Console.ReadLine(), out modifiableRules.numberDecks);
                 if (couldParse)
                 {
@@ -385,6 +412,7 @@ namespace BlackjackDealer
                 }
                 else
                 {
+                    //Console.SetCursorPosition();
                     validResponse = false;
                     DisplayErrorMessage("Please enter an integer, there can't be partial decks!");
                     numberErrorLines += 2;
@@ -398,7 +426,7 @@ namespace BlackjackDealer
 
             do
             {
-                Console.Write("\tStarting Cash: ");
+                Console.Write("\t   Starting Cash: $");
                 couldParse = int.TryParse(Console.ReadLine(), out modifiableRules.startingMoney);
                 if (couldParse)
                 {
@@ -419,7 +447,7 @@ namespace BlackjackDealer
 
             do
             {
-                Console.Write("\tNumber Rounds: ");
+                Console.Write("\tNumber of Rounds: ");
                 couldParse = int.TryParse(Console.ReadLine(), out modifiableRules.numberRounds);
                 if (couldParse)
                 {
@@ -434,8 +462,8 @@ namespace BlackjackDealer
 
             } while (!validResponse);
 
-            Console.Write("\tPlaying Style: ");
-            userResponse = ConsoleHelper.MultipleChoice(false, 2, yOffset, 15, "Every Man For Himself", "Three Musketeers");
+            Console.Write("\t   Playing Style: ");
+            userResponse = ConsoleHelper.MultipleChoice(false, 2, yOffset, 18, "Every Man For Himself", "Three Musketeers");
 
             if (userResponse == 0)
             {
@@ -449,6 +477,10 @@ namespace BlackjackDealer
             DisplayContinuePrompt("exit");
         }
 
+        /// <summary>
+        /// Displays the rules that the player can modify and what they are set to
+        /// </summary>
+        /// <param name="modifiableRules">the tuple that holds the rules' values</param>
         static void DisplayModifiedRules((int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             DisplayScreenHeader("Player Defined Rules");
@@ -466,7 +498,7 @@ namespace BlackjackDealer
             }
 
 
-            DisplayContinuePrompt("continue");
+            //DisplayContinuePrompt("continue");
         }
 
         #endregion
@@ -481,7 +513,12 @@ namespace BlackjackDealer
         #endregion
         // MAKE BETTER need better name for region
         #region CARD STUFF
-
+        
+        /// <summary>
+        /// Takes card info from a text file, makes each of the cards into a PlayingCard, then creates a deck of PlayingCard
+        /// </summary>
+        /// <param name="cardDeckInfo">the text file that holds the card info</param>
+        /// <returns>a list of PlayingCards</returns>
         static List<PlayingCard> BuildCardDeck(string cardDeckInfo)
         {
             List<PlayingCard> cards = new List<PlayingCard>();
@@ -508,6 +545,13 @@ namespace BlackjackDealer
             return cards;
         }
 
+        /// <summary>
+        /// Randomly selects a card from the card deck then places it in the discard
+        /// </summary>
+        /// <param name="random">the Random object</param>
+        /// <param name="cardDeck">a List of PlayingCard, the deck</param>
+        /// <param name="discard">a list of PlayingCard, discarded from the deck</param>
+        /// <returns>the randomly selected PlayingCard</returns>
         static PlayingCard DrawCard(Random random, List<PlayingCard> cardDeck, List<PlayingCard> discard)
         {
 
@@ -520,6 +564,10 @@ namespace BlackjackDealer
             return drawnCard;
         }
 
+        /// <summary>
+        /// Uses the cardInfo method in the PlayingCard class to write out a list of playing cards
+        /// </summary>
+        /// <param name="cards">a list of PlayingCard</param>
         static void DisplayAllCards(List<PlayingCard> cards)
         {
             foreach (PlayingCard card in cards)
@@ -556,7 +604,8 @@ namespace BlackjackDealer
 
         static void DisplayErrorMessage(string error)
         {
-            Console.WriteLine($"\t** {error} **");
+            // Console.WriteLine($"\t** {error} **");
+            MessageBox.Show($"\t** {error} **");
 
             // DisplayContinuePrompt("retry");
         }
