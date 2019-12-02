@@ -73,7 +73,8 @@ namespace BlackjackDealer
             string cardDeckInfo = @"Data\cardDeckInfo.txt";
             string instructions = @"Data\instructions.txt";
             string defaultRules = @"Data\defaultRules.txt";
-            string players = @"Data\players.txt";
+            //string players = @"Data\players.txt";
+            List<Player> players = new List<Player>();
 
             Random random = new Random();
 
@@ -92,20 +93,26 @@ namespace BlackjackDealer
             {
                 DisplayScreenHeader("Main Menu");
 
-                userResponse = ConsoleHelper.MultipleChoice(true, 1, 0, 0, "Play Game", "Display Instructions", "Rules", "Players");
-                switch (userResponse + 1)
+                userResponse = ConsoleHelper.MultipleChoice(true, 1, 0, 0, "Play Game", "Display Instructions", "Rules", "Players"/*, "Help"*/);
+                switch (userResponse)
                 {
-                    case 1:
+                    case 0:
                         DisplayGame(random, cardDeckInfo, modifiableRules, players);
                         break;
-                    case 2:
+                    case 1:
                         DisplayInstructionsMenu(instructions);
                         break;
-                    case 3:
+                    case 2:
                         DisplayRulesMenu(defaultRules, modifiableRules);
                         break;
+                    case 3:
+                        DisplayPlayerMenu(players);
+                        break;
                     case 4:
-                        DisplayPlayerMenu();
+
+                        break;
+                    case -1:
+                        runApplication = false;
                         break;
                     default:
                         break;
@@ -115,7 +122,14 @@ namespace BlackjackDealer
 
         #region PLAY GAME METHODS
 
-        static void DisplayGame(Random random, string cardDeckInfo, (int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules, string players)
+        /// <summary>
+        /// The initial method for displaying the playable game
+        /// </summary>
+        /// <param name="random">teh Random object</param>
+        /// <param name="cardDeckInfo">The text file for the cards</param>
+        /// <param name="modifiableRules">the changable rules</param>
+        /// <param name="players">the List of players from the player menu</param>
+        static void DisplayGame(Random random, string cardDeckInfo, (int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules, List<Player> players)
         {
             List<PlayingCard> cardDeck = BuildCardDeck(cardDeckInfo);
             List<PlayingCard> cardDeckTemp = new List<PlayingCard>();
@@ -177,6 +191,12 @@ namespace BlackjackDealer
             }
         }
 
+        /// <summary>
+        /// Displays what the player sees
+        /// </summary>
+        /// <param name="cardDeck">The deck of cards the gam eis being played with</param>
+        /// <param name="discard">the discard for said cards</param>
+        /// <param name="random"></param>
         static void DisplayPlayerScreen(List<PlayingCard> cardDeck, List<PlayingCard> discard, Random random)
         {
             PlayingCard drawnCard;
@@ -201,6 +221,7 @@ namespace BlackjackDealer
 
         #endregion
 
+        // TODO fix instructions menu--the content isn't displaying
         #region INSTRUCTIONS METHODS
 
         /// <summary>
@@ -243,34 +264,38 @@ namespace BlackjackDealer
                 userResponse += 1; // Imporoving program readability so that the first options is option #1
                 switch (userResponse)
                 {
-                    case 1:
+                    case 0:
                         DisplaySubheadingContent("Object of the Game", submenuContent, 0);
                         break;
-                    case 2:
+                    case 1:
                         DisplaySubheadingContent("Betting", submenuContent, 1);
                         break;
-                    case 3:
+                    case 2:
                         DisplaySubheadingContent("The Deal", submenuContent, 2);
                         break;
-                    case 4:
+                    case 3:
                         DisplaySubheadingContent("Getting a Blackjack", submenuContent, 3);
                         break;
-                    case 5:
+                    case 4:
                         DisplaySubheadingContent("The Play", submenuContent, 4);
                         break;
-                    case 6:
+                    case 5:
                         DisplaySubheadingContent("The Dealer\'s Play", submenuContent, 5);
                         break;
-                    default:
-
-                        Console.WriteLine("\n\n\t--------------------------------------------------------------------------" +
+                    case -1:
+                        RepeatCharacter(80, "-");
+                        Console.WriteLine(/*"\n\n\t--------------------------------------------------------------------------" +*/
                               "\n\tText taken from the Bicycle Cards Website," +
-                              "\n\tEdited https://bicyclecards.com/how-to-play/blackjack/" +
-                              "\n\t--------------------------------------------------------------------------");
+                              "\n\tEdited https://bicyclecards.com/how-to-play/blackjack/" /*+
+                              "\n\t--------------------------------------------------------------------------"*/);
+                        RepeatCharacter(80, "-");
 
                         DisplayContinuePrompt("exit");
 
                         keepLooping = false;
+                        break;
+                    default:
+                        DisplayErrorMessage("faulty input");
                         break;
                 }
             } while (keepLooping);
@@ -297,8 +322,20 @@ namespace BlackjackDealer
         static void DisplayRulesMenu(string defaultRules, (int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             DisplayScreenHeader("Rules");
+            string[] allRules = GetRules(defaultRules);
 
-            List<string> allRules = GetRules(defaultRules);
+            //string[] allRulesTemp = File.ReadAllLines(defaultRules);
+            //string[] allRulesSplit;
+            //List<string> allRules = new List<string>();
+            //foreach (string rule in allRulesTemp)
+            //{
+            //    allRulesSplit = rule.Split('|');
+            //}
+
+            //foreach (string rule in allRulesSplit)
+            //{
+            //    allRules.Add(rule);
+            //}
             // List<string> modifiableRulesList = GetModifiableRules(defaultRules);
 
             bool keepLooping = true;
@@ -306,21 +343,23 @@ namespace BlackjackDealer
             int userResponse;
 
             userResponse = ConsoleHelper.MultipleChoice(true, 1, 0, 0, "View Rules", "Modify Rules");
-            // userResponse += 1;
             do
             {
-                switch (userResponse + 1)
+                switch (userResponse)
                 {
-                    case 1:
+                    case 0:
                         DisplayViewRules(allRules);
                         break;
 
-                    case 2:
+                    case 1:
                         DisplayModifyRules(modifiableRules);
+                        break;
+                    case -1:
+                        keepLooping = false;
                         break;
 
                     default:
-                        keepLooping = false;
+                        DisplayErrorMessage("faulty input");
                         break;
                 }
             } while (keepLooping);
@@ -331,30 +370,19 @@ namespace BlackjackDealer
         /// </summary>
         /// <param name="defaultRules">the path for the text file</param>
         /// <returns>a list of all the rules properly taken apart to be written on the screen</returns>
-        static List<string> GetRules(string defaultRules)
+        static string[] GetRules(string defaultRules)
         {
-            string[] rulesTextArray = File.ReadAllLines(defaultRules);
-            List<string> allRules = new List<string>();    
+            string rulesText = File.ReadAllText(defaultRules);
+            string[] allRules = rulesText.Split('*');
 
-            foreach (string rule in rulesTextArray)
-            {
-                string[] individualRule = rule.Split('*');
-                foreach (string finalRule in individualRule)
-                {
-                    string[] finalRuleSplit = finalRule.Split('|');
-
-                    allRules.Add(finalRuleSplit[0]);
-                }
-            }
-
-            return allRules; 
+            return allRules;
         }
 
         /// <summary>
         /// writes out and formats all of the rules for the game
         /// </summary>
-        /// <param name="allRules">takes the list of rules that can be generated with the GetRules method</param>
-        static void DisplayViewRules(List<string> allRules)
+        /// <param name="allRules">the list of rules that is generated with the GetRules method</param>
+        static void DisplayViewRules(string[] allRules)
         {
             DisplayScreenHeader("Rules");
 
@@ -369,7 +397,7 @@ namespace BlackjackDealer
         /// <summary>
         /// lets the user change a few specific rules
         /// </summary>
-        /// <param name="modifiableRules">a tuple that hold the rules that can be modified</param>
+        /// <param name="modifiableRules">a tuple that holds the rules that can be modified</param>
         static void DisplayModifyRules((int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             bool validResponse = false;
@@ -421,7 +449,7 @@ namespace BlackjackDealer
             } while (!validResponse);
 
             // ------------------------------------------------------------
-            // resetting the valid response barable for fuether validation
+            // resetting the valid response variable for further validation
             validResponse = false;
 
             do
@@ -442,7 +470,7 @@ namespace BlackjackDealer
             } while (!validResponse);
 
             // ------------------------------------------------------------
-            // resetting the valid response barable for fuether validation
+            // resetting the valid response variable for further validation
             validResponse = false;
 
             do
@@ -496,8 +524,6 @@ namespace BlackjackDealer
             {
                 Console.WriteLine("Betting Style: Three Musketeers");
             }
-
-
             //DisplayContinuePrompt("continue");
         }
 
@@ -505,15 +531,93 @@ namespace BlackjackDealer
 
         #region PLAYER METHODS
 
-        static void DisplayPlayerMenu()
+        static void DisplayPlayerMenu(List<Player> players)
+        {
+            bool keepLooping = true;
+            int userResponse;
+
+            do
+            {
+                DisplayScreenHeader("Players Menu");
+
+                userResponse = ConsoleHelper.MultipleChoice(true, 1, 0, 0, "View Players", "Add Players", "Remove Players");
+                switch (userResponse)
+                {
+                    case 0:
+                        DisplayViewPlayers(players);
+                        break;
+
+                    case 1:
+                        DisplayAddPlayers(players);
+                        break;
+
+                    case 2:
+                        DisplayRemovePlayers(players);
+                        break;
+
+                    case -1:
+                        keepLooping = false;
+                        break;
+
+                    default:
+                        DisplayErrorMessage("faulty keystroke");
+                        break;
+                }
+            } while (keepLooping);
+
+            DisplayContinuePrompt("RID");
+        }
+
+        static void DisplayViewPlayers(List<Player> players)
+        {
+            DisplayScreenHeader("Players");
+
+            foreach (Player player in players)
+            {
+                Console.WriteLine(player.Name);
+            }
+
+            DisplayContinuePrompt("return to the menu");
+        }
+
+        static List<Player> DisplayAddPlayers(List<Player> players)
+        {
+            List<Player> newPlayers = new List<Player>();
+            Player newPlayer = new Player();
+            string newName;
+            bool keepLooping =  true;
+
+            DisplayScreenHeader("Add a New Character");
+            Console.WriteLine("\tAdd as many players as you\'d like, leave the field blank and press enter when you want to stop adding.");
+
+            do
+            {
+                Console.Write("Player Name: ");
+                newName = Console.ReadLine();
+                if (newName == "")
+                {
+                    keepLooping = false;
+                }
+                else
+                {
+                    newPlayer.Name = newName;
+                    newPlayers.Add(newPlayer);
+                }
+
+            } while (keepLooping);
+
+            return newPlayers;
+        }
+
+        static void DisplayRemovePlayers(List<Player> players)
         {
 
         }
 
         #endregion
-        // MAKE BETTER need better name for region
+
         #region CARD STUFF
-        
+
         /// <summary>
         /// Takes card info from a text file, makes each of the cards into a PlayingCard, then creates a deck of PlayingCard
         /// </summary>
@@ -561,6 +665,8 @@ namespace BlackjackDealer
 
             drawnCard = cardDeck[randomNumber];
 
+            discard.Add(drawnCard);
+
             return drawnCard;
         }
 
@@ -582,6 +688,10 @@ namespace BlackjackDealer
 
         #region HELPER METHODS
 
+        /// <summary>
+        /// A simple method that waits for user input to resume executing the code
+        /// </summary>
+        /// <param name="action">what the user is pressing the key for, like "continue", "exit", or something more specific</param>
         static void DisplayContinuePrompt(string action)
         {
             //Console.WriteLine();
@@ -589,6 +699,10 @@ namespace BlackjackDealer
             //Console.ReadLine();
         }
 
+        /// <summary>
+        /// Clears the console window then displays a header with the specified text
+        /// </summary>
+        /// <param name="headerText">what needs to be displayed</param>
         static void DisplayScreenHeader(string headerText)
         {
             int dashRepeat = 74; // a constant throughout the program, when I have a line for a main heading, it's 74 characters long
@@ -602,6 +716,10 @@ namespace BlackjackDealer
             Console.WriteLine("\n");
         }
 
+        /// <summary>
+        /// Shows a simple error message indicating what the user did wrong via input from the program. Mostly for formatting.
+        /// </summary>
+        /// <param name="error">The message that is to be displayed, and what the user should do to fix the error</param>
         static void DisplayErrorMessage(string error)
         {
             // Console.WriteLine($"\t** {error} **");
@@ -610,6 +728,11 @@ namespace BlackjackDealer
             // DisplayContinuePrompt("retry");
         }
 
+        /// <summary>
+        /// repeats a specified character
+        /// </summary>
+        /// <param name="numberTimes">the number of times to repeat the character</param>
+        /// <param name="character">the character that needs to be repeated</param>
         static void RepeatCharacter(int numberTimes, string character)
         {
             for (int repeat = 0; repeat < numberTimes; repeat++)

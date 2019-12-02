@@ -1,39 +1,41 @@
-﻿Blackjack may be played with one to eight decks of 52-card decks.|true
-*
-Aces may be counted as 1 or 11 points, 2 to 9 according to card value, and tens and face cards count
-as ten points|false
-*
-The value of a hand is the sum of the point values of the individual cards. Except, a "blackjack" 
-is the highest hand, consisting of an ace and any 10-point card, and it outranks all other 
-21-point hands|false 
-*
-After the players have bet, the dealer will give two cards to each player and two cards to itself. 
-Players can only see one of the cards|false
-*
-If the dealer has a ten or an ace showing, it will check to see if the second card is an ace or a 
-ten|false 
-*
-If the dealer does have a blackjack, then all wagers will lose, unless the player also has a 
-blackjack, which will result in a push.|false 
-*
-Play begins with the player to the dealer's left. The following are the choices available 
-to the player:
-	Stay: Player stays put with their cards.
-	Hit: Player draws another card (and more if they wish). If this card causes the 
-	player's total points to exceed 21 (known as busting) then they lose.|false 
-*
-After each player has had their turn, the dealer will turn over its hidden card. If the dealer 
-has 16 or less, then it will draw another card.|false 
-*
-If the dealer goes over 21 points, then any player who didn't already bust will win.|false 
-*
-If the dealer does not bust, then the higher point total between the player and dealer will win.|false 
-*
-Winning wagers pay more money. Normally, the player's bet is doubled; however, if they got a 
-blackjack, they get triple their bet.|true
-*
-There are a few ways to bet:
-	Every man for himself (the default)
-		Every player bets only for themselves, meaning that they lose that amount if they lose or collect winnings based on that bet
-	Three Musketeers
-		"All for one and one for all," all players' bets are put into a pool. If any of the players win, the winnings are divided amongst the players, and it's all gone if everyone loses|true	
+﻿Blackjack may be played with one to eight decks of 52-card decks.*
+
+Aces may be counted as 1 or 11 points, 2 to 9 according to card value, and tens and face cards count*
+as 10 points*  
+
+The value of a hand is the sum of the point values of the individual cards. Except, a "blackjack" *
+is the highest hand, consisting of an ace and any 10-point card, and it outranks all other *
+21-point hands   *
+
+After the players have bet, the dealer will give two cards to each player and two cards to itself. *
+Players can only see one of the cards  *
+
+If the dealer has a ten or an ace showing, it will check to see if the second card is an ace or a *
+ten   *
+
+If the dealer does have a blackjack, then all wagers will lose, unless the player also has a *
+blackjack, which will result in a push.   *
+
+Play begins with the player to the dealer's left. The following are the choices available *
+to the player:*
+	Stay: Player stays put with their cards.*
+	Hit: Player draws another card (and more if they wish). If this card causes the *
+	player's total points to exceed 21 (known as busting) then they lose.   *
+
+After each player has had their turn, the dealer will turn over its hidden card. If the dealer *
+has 16 or less, then it will draw another card.   *
+
+If the dealer goes over 21 points, then any player who didn't already bust will win.   *
+
+If the dealer does not bust, then the higher point total between the player and dealer will win.   *
+
+Winning wagers pay more money. Normally, the player's bet is doubled; however, if they got a *
+blackjack, they get triple their bet.*
+
+There are a few ways to bet:*
+	Every man for himself (the default)*
+		Every player bets only for themselves, meaning that they lose that amount if they lose or *
+		collect winnings based on that bet*
+	Three Musketeers*
+		"All for one and one for all," all players' bets are put into a pool. If any of the players *
+		win, the winnings are divided amongst the players, and it's all gone if everyone loses  	*

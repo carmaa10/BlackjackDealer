@@ -12,7 +12,7 @@ namespace BlackjackDealer
 
         private string _name;
         private int _money;
-        private List<(string cardType, int cardValue)> _cards;
+        private List<PlayingCard> _cards;
 
         #endregion
 
@@ -30,7 +30,7 @@ namespace BlackjackDealer
             set { _money = Money; }
         }
 
-        public List<(string cardType, int cardValue)> Cards
+        public List<PlayingCard> Cards
         {
             get { return _cards; }
             set { _cards = Cards; }
@@ -49,6 +49,12 @@ namespace BlackjackDealer
             _name = playerName;
             _money = startMoney;
         }
+
+        #endregion
+
+        #region METHODS
+
+
 
         #endregion
     }
