@@ -48,6 +48,7 @@ namespace BlackjackDealer
         {
             _name = playerName;
             _money = startMoney;
+            _cards = new List<PlayingCard>();
         }
 
         #endregion
