@@ -14,6 +14,7 @@ using System.Windows;
 // * HERE = where I left off, for easy find later
 
 // TODO delete options to add player objects and modify rules if can't fix, better than a dysfunctional program.
+// TODO player cards total isn't working, fix it
 
 namespace BlackjackDealer
 {
@@ -135,18 +136,20 @@ namespace BlackjackDealer
         static void DisplayGame(Random random, string cardDeckInfo, (int numberDecks, int startingMoney, Dealer.BettingStyle bettingStyle, int numberRounds) modifiableRules)
         {
             List<PlayingCard> cardDeck = BuildCardDeck(cardDeckInfo);
-            List<PlayingCard> cardDeckTemp = new List<PlayingCard>();
+            //List<PlayingCard> cardDeckTemp = new List<PlayingCard>();
             List<PlayingCard> discard = new List<PlayingCard>();
-            List<PlayingCard> dealerCards = new List<PlayingCard>();
+            //List<PlayingCard> dealerCards = new List<PlayingCard>();
             List<Player> players = new List<Player>();
 
-            int numberDecks = 1;
+            Dealer dealer = new Dealer();
+
+            //int numberDecks = 1;
             int startingMoney = 500;
             int numberRounds = 5;
             //Dealer.BettingStyle bettingStyle = Dealer.BettingStyle.everyManForHimself;
 
-            Player player1 = new Player("Player 1", startingMoney);
-            Player player2 = new Player("Player 2", startingMoney);
+            Player player1 = new Player("Player 1", startingMoney/*, 0, 0*/);
+            Player player2 = new Player("Player 2", startingMoney/*, 0, 0*/);
 
             players.Add(player1);
             players.Add(player2);
@@ -174,17 +177,19 @@ namespace BlackjackDealer
 
             for (int round = 0; round < numberRounds; round++)
             {
-                // ---------------------------------------------------------------------
-                // Resetting the cards that everything has
+
+
+                dealer.Cards.Add(DrawCard(random, cardDeck, discard));
+                dealer.Cards.Add(DrawCard(random, cardDeck, discard));
 
                 foreach (Player player in players)
                 {
-                    DisplayPlayerScreen(cardDeck, discard, random, player, dealerCards);
+                    DisplayPlayerScreen(cardDeck, discard, random, player, dealer);
                 }
 
-                DisplayDealerScreen(players, dealerCards, cardDeck, discard);
+                DisplayDealerScreen(players, dealer, cardDeck, discard, random);
 
-                ClearAllHands(players, dealerCards);
+                ClearAllHands(players, dealer);
             }
 
             
@@ -232,39 +237,70 @@ namespace BlackjackDealer
         /// <param name="cardDeck">The deck of cards the gam eis being played with</param>
         /// <param name="discard">the discard for said cards</param>
         /// <param name="random"></param>
-        static void DisplayPlayerScreen(List<PlayingCard> cardDeck, List<PlayingCard> discard, Random random, Player player, List<PlayingCard> dealerCards)
+        static void DisplayPlayerScreen(List<PlayingCard> cardDeck, List<PlayingCard> discard, Random random, Player player, Dealer dealer)
         {
             PlayingCard drawnCard;
-            drawnCard = DrawCard(random, cardDeck, discard);
+            //drawnCard = DrawCard(random, cardDeck, discard);
             bool turnEnd = false;
+            bool validResponse = false;
             int userResponse;
+            int playerBet = 0;
 
-            List<PlayingCard> playerCards = new List<PlayingCard>();
-            
-
-            dealerCards.Add(DrawCard(random, cardDeck, discard));
-            dealerCards.Add(DrawCard(random, cardDeck, discard));
+            //List<PlayingCard> playerCards = new List<PlayingCard>();
 
             player.Cards.Add(DrawCard(random, cardDeck, discard));
             player.Cards.Add(DrawCard(random, cardDeck, discard));
-            
+
+            DisplayScreenHeader(player.Name);
+
+            Console.WriteLine($"\tYou have ${player.Money}");
+            Console.Write("\tHow much would you like to bet? $");
 
             do
             {
-                int playerCardsTotal = 0;
+                bool couldParse;
+
+                couldParse = int.TryParse(Console.ReadLine(), out playerBet);
+
+                if (couldParse)
+                {
+                    validResponse = true;
+                }
+                else
+                {
+                    DisplayErrorMessage("Please enter an integer [ex. 1, 56]");
+                }
+
+                if (playerBet > player.Money)
+                {
+                    validResponse = false;
+                    DisplayErrorMessage("You cannot bet more than you have!");
+                }
+
+            } while (!validResponse);
+
+            player.Money -= playerBet;
+            player.RoundBet = playerBet;
+
+
+            do
+            {
+                int playerCardsTotal/* = 0*/;
 
                 Console.Clear();
 
-                DisplayScreenHeader(player.Name);
-
                 playerCardsTotal = GetCardValueTotal(player.Cards);
+
+                DisplayScreenHeader(player.Name);
 
                 //foreach (PlayingCard card in player.Cards)
                 //{
                 //    playerCardsTotal += card.CardValue;
                 //}
 
-                Console.WriteLine($"\tDealer's Cards: {dealerCards[0].CardRank} of {dealerCards[0].CardSuit} and ?");
+                Console.WriteLine($"\t{player.Name}'s bet: ${playerBet}");
+
+                Console.WriteLine($"\tDealer's Cards: {dealer.Cards[0].CardRank} of {dealer.Cards[0].CardSuit}, ???");
 
                 WriteAllCards(player.Name, player.Cards);
 
@@ -279,7 +315,7 @@ namespace BlackjackDealer
 
                 if (playerCardsTotal < 21)
                 {
-                    userResponse = ConsoleHelper.MultipleChoice(false, 2, 4, 0, "Hit", "Pass");
+                    userResponse = ConsoleHelper.MultipleChoice(false, 2, 5, 0, "Hit", "Stay");
                     switch (userResponse)
                     {
                         case 0:
@@ -287,7 +323,8 @@ namespace BlackjackDealer
                             break;
 
                         case 1:
-                            Console.WriteLine($"\nYou stopped at: {playerCardsTotal}");
+                            player.RoundTotal = playerCardsTotal;
+                            Console.WriteLine($"\n\tYou stopped at: {player.RoundTotal}");
                             DisplayContinuePrompt("progress to the next player");
                             turnEnd = true;
                             break;
@@ -299,21 +336,24 @@ namespace BlackjackDealer
                 }
                 else if (playerCardsTotal > 21)
                 {
-                    Console.WriteLine("\nyou bust :(");
+                    Console.WriteLine("\nBust!");
+                    DisplayContinuePrompt("continue");
                     turnEnd = true;
                 }
-                else if (playerCardsTotal == 21)
+                else if ((playerCardsTotal == 21) && (player.Cards.Count == 2))
                 {
-                    Console.WriteLine("\nyou got a blackjack!");
+                    Console.WriteLine("\nBlackjack!");
+                    player.Money += playerBet;
+                    DisplayContinuePrompt("continue");
                     turnEnd = true;
                 }
 
             } while (!turnEnd);
 
-            DisplayContinuePrompt("continue");
+            // DisplayContinuePrompt("continue");
         }
 
-        static void DisplayDealerScreen(List<Player> players, List<PlayingCard> dealerCards, List<PlayingCard> cardDeck, List<PlayingCard> discard)
+        static void DisplayDealerScreen(List<Player> players, Dealer dealer, List<PlayingCard> cardDeck, List<PlayingCard> discard, Random random)
         {
             bool keepLooping = true;
 
@@ -321,12 +361,25 @@ namespace BlackjackDealer
             {
                 int dealersTotal = 0;
 
-                DisplayScreenHeader("Dealer\'s Play");
-                WriteAllCards("Dealer", dealerCards);
-                foreach (PlayingCard card in dealerCards)
+                foreach (PlayingCard card in dealer.Cards)
                 {
                     dealersTotal += card.CardValue;
                 }
+
+                DisplayScreenHeader("Dealer\'s Play");
+                WriteAllCards("Dealer", dealer.Cards);
+                Console.WriteLine($"\tDealer Total: {dealersTotal}");
+
+                if (dealersTotal <= 15)
+                {
+                    dealer.Cards.Add(DrawCard(random, cardDeck, discard));
+                }
+                else if (dealersTotal > 21)
+                {
+                    Console.WriteLine("\tDealer Busts!");
+                }
+
+                DisplayContinuePrompt("continue");
 
             } while (keepLooping);
 
@@ -366,10 +419,9 @@ namespace BlackjackDealer
         /// Resets all of the cards in hands to zero
         /// </summary>
         /// <param name="players">the list of players</param>
-        /// <param name="dealerCards">the list of the dealer's cards</param>
-        static void ClearAllHands(List<Player> players, List<PlayingCard> dealerCards)
+        static void ClearAllHands(List<Player> players, Dealer dealer)
         {
-            dealerCards.Clear();
+            dealer.Cards.Clear();
 
             foreach (Player player in players)
             {
@@ -379,18 +431,6 @@ namespace BlackjackDealer
                 }
             }
         }
-
-        static void DisplayLost()
-        {
-
-        }
-
-        static void DisplayWon()
-        {
-
-        }
-
-        
 
         #endregion
 
@@ -893,8 +933,8 @@ namespace BlackjackDealer
         /// <param name="error">The message that is to be displayed, and what the user should do to fix the error</param>
         static void DisplayErrorMessage(string error)
         {
-            // Console.WriteLine($"\t** {error} **");
-            MessageBox.Show($"\t** {error} **");
+            Console.WriteLine($"\t** {error} **");
+            // MessageBox.Show($"\t** {error} **");
 
             // DisplayContinuePrompt("retry");
         }

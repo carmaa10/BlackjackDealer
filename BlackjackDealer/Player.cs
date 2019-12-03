@@ -13,6 +13,9 @@ namespace BlackjackDealer
         private string _name;
         private int _money;
         private List<PlayingCard> _cards;
+        private bool _isplaying;
+        private int _roundbet;
+        private int _roundtotal;
 
         #endregion
 
@@ -36,6 +39,24 @@ namespace BlackjackDealer
             set { _cards = Cards; }
         }
 
+        public bool IsPlaying
+        {
+            get { return _isplaying; }
+            set { _isplaying = IsPlaying; }
+        }
+
+        public int RoundBet
+        {
+            get { return _roundbet; }
+            set { _roundbet = RoundBet; }
+        }
+
+        public int RoundTotal
+        {
+            get { return _roundtotal; }
+            set { _roundtotal = RoundTotal; }
+        }
+
         #endregion
 
         #region CONSTRUCTORS
@@ -44,11 +65,14 @@ namespace BlackjackDealer
 
         }
 
-        public Player(string playerName, int startMoney)
+        public Player(string playerName, int startMoney/*, int roundBet, int roundTotal*/)
         {
             _name = playerName;
             _money = startMoney;
             _cards = new List<PlayingCard>();
+            _isplaying = true;
+            //_roundbet = roundBet;
+            //_roundtotal = roundTotal;
         }
 
         #endregion
