@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackjackDealer
 {
-    class Player
+    public class Player
     {
 
         #region ENUMS
@@ -26,7 +26,7 @@ namespace BlackjackDealer
         private string _name;
         private int _money;
         private List<PlayingCard> _cards;
-        //private bool _isplaying;
+        private bool _isplaying;
         //private int _roundbet;
         //private int _roundtotal;
         //private PlayerOutcome _playerOutcome;
@@ -44,7 +44,7 @@ namespace BlackjackDealer
         public int Money
         {
             get { return _money; }
-            set { _money = Money; }
+            set { _money = value; }
         }
 
         public List<PlayingCard> Cards
@@ -53,11 +53,11 @@ namespace BlackjackDealer
             set { _cards = Cards; }
         }
 
-        //public bool IsPlaying
-        //{
-        //    get { return _isplaying; }
-        //    set { _isplaying = IsPlaying; }
-        //}
+        public bool IsPlaying
+        {
+            get { return _isplaying; }
+            set { _isplaying = IsPlaying; }
+        }
 
         //public int RoundBet
         //{
@@ -90,7 +90,7 @@ namespace BlackjackDealer
             _name = playerName;
             _money = startMoney;
             _cards = new List<PlayingCard>();
-            //_isplaying = true;
+            _isplaying = true;
         }
 
         #endregion

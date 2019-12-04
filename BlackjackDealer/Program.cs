@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows;
 
-// TODO player cards total isn't working, fix it
-
 namespace BlackjackDealer
 {
     class Program
@@ -18,7 +16,7 @@ namespace BlackjackDealer
         // Description: A program that deals blackjack for two players
         // Author: Carma Aten
         // Date Created: 11/17/19
-        // Last Modified: 12/3/19
+        // Last Modified: 12/4/19
         // ************************************
 
         static void Main(string[] args)
@@ -195,8 +193,8 @@ namespace BlackjackDealer
 
                 dealerOutcome = DisplayDealerScreen(players, dealer, cardDeck, discard, random, playerRoundInfo);
 
-                DisplayRoundOutcome(playerRoundInfo, dealerOutcome);
-
+                DisplayRoundOutcome(playerRoundInfo, dealerOutcome, players);
+                //DisplayContinuePrompt("this is only here so i can set a breakpoint");
                 ClearAllHands(players, dealer);
             }
 
@@ -285,14 +283,14 @@ namespace BlackjackDealer
             DisplayScreenHeader($"{player.Name}'s Turn!");
             DisplayContinuePrompt("continue");
 
-            DisplayScreenHeader(player.Name);
-
-            Console.WriteLine($"\tYou have ${player.Money}");
-            Console.Write("\tHow much would you like to bet? $");
-
             do
             {
                 bool couldParse;
+
+                DisplayScreenHeader(player.Name);
+
+                Console.WriteLine($"\tYou have ${player.Money}");
+                Console.Write("\tHow much would you like to bet? $");
 
                 couldParse = int.TryParse(Console.ReadLine(), out playerBet);
 
@@ -303,46 +301,34 @@ namespace BlackjackDealer
                 else
                 {
                     DisplayErrorMessage("Please enter an integer [ex. 1, 56]");
+                    DisplayContinuePrompt("try again");
                 }
 
                 if (playerBet > player.Money)
                 {
                     validResponse = false;
-                    DisplayErrorMessage("You cannot bet more than you have!");
+                    DisplayErrorMessage("You can\'t bet more than you have!");
                 }
 
             } while (!validResponse);
 
-            player.Money -= playerBet;
+            player.Money -= playerBet; // TODO
             //player.RoundBet = playerBet;
             roundOutcome.playerBet = playerBet;
 
             do
             {
-
                 Console.Clear();
 
                 playerCardsTotal = GetCardValueTotal(player.Cards);
 
                 DisplayScreenHeader(player.Name);
 
-                //foreach (PlayingCard card in player.Cards)
-                //{
-                //    playerCardsTotal += card.CardValue;
-                //}
-
                 Console.WriteLine($"\t{player.Name}'s bet: ${playerBet}");
 
                 Console.WriteLine($"\tDealer's Cards: {dealer.Cards[0].CardRank} of {dealer.Cards[0].CardSuit}, ???");
 
                 WriteAllCards(player.Name, player.Cards);
-
-                //Console.Write($"\tYour Cards: ");
-
-                //foreach (PlayingCard card in playerCards)
-                //{
-                //    Console.Write($"{card.CardRank} of {card.CardSuit}, ");
-                //}
 
                 Console.WriteLine($"\n\tCurrent total: {playerCardsTotal}");
 
@@ -411,30 +397,30 @@ namespace BlackjackDealer
 
             do
             {
-                int dealersTotal = 0;
+                //int dealersTotal = 0;
 
                 //foreach (PlayingCard card in dealer.Cards)
                 //{
                 //    dealersTotal += card.CardValue;
                 //}
 
-                dealersTotal = GetCardValueTotal(dealer.Cards);
+                dealerOutcome.roundTotal = GetCardValueTotal(dealer.Cards);
 
                 DisplayScreenHeader("Dealer\'s Play");
                 WriteAllCards("Dealer", dealer.Cards);
-                Console.WriteLine($"\tDealer Total: {dealersTotal}");
+                Console.WriteLine($"\tDealer Total: {dealerOutcome.roundTotal}");
 
-                if (dealersTotal <= 15)
+                if (dealerOutcome.roundTotal <= 15)
                 {
                     dealer.Cards.Add(DrawCard(random, cardDeck, discard));
                 }
-                else if (dealersTotal > 21)
+                else if (dealerOutcome.roundTotal > 21)
                 {
                     Console.WriteLine("\tDealer Busts!");
                     dealerOutcome.outcome = Player.PlayerOutcome.bust;
                     keepLooping = false;
                 }
-                else if ((dealersTotal == 21) && (dealer.Cards.Count == 2))
+                else if ((dealerOutcome.roundTotal == 21) && (dealer.Cards.Count == 2))
                 {
                     Console.WriteLine("\nDealer got a blackjack!");
                     dealerOutcome.outcome = Player.PlayerOutcome.blackjack;
@@ -457,7 +443,8 @@ namespace BlackjackDealer
 
         static void DisplayRoundOutcome(
             List<(string playerName, int roundTotal, int playerBet, Player.PlayerOutcome outcome)> playerRoundInfo,
-            (string name, int dealerTotal, Player.PlayerOutcome outcome) dealerOutcome)
+            (string name, int dealerTotal, Player.PlayerOutcome outcome) dealerOutcome,
+            List<Player> players)
         {
             DisplayScreenHeader("Round Outcome");
 
@@ -481,12 +468,14 @@ namespace BlackjackDealer
                     dealerOutcome.outcome != Player.PlayerOutcome.blackjack)
                 {
                     Console.WriteLine("\tYou got a blackjack");
+                    AwardWinningsToPlayer(players, 3, player);
                 }
                 // Dealer busted
                 else if (dealerOutcome.outcome == Player.PlayerOutcome.bust && 
-                    player.outcome != Player.PlayerOutcome.bust)
+                    player.outcome != Player.PlayerOutcome.bust && player.outcome != Player.PlayerOutcome.blackjack)
                 {
-                    Console.WriteLine("The dealer busted, so you win!");
+                    Console.WriteLine("\tThe dealer busted, so you win!");
+                    AwardWinningsToPlayer(players, 2, player);
                 }
                 // Player busted
                 else if (player.outcome == Player.PlayerOutcome.bust)
@@ -506,6 +495,7 @@ namespace BlackjackDealer
                     player.outcome != Player.PlayerOutcome.bust))
                 {
                     Console.WriteLine("\tYou got a higher total than the dealer, so you win this round!");
+                    AwardWinningsToPlayer(players, 2, player);
                 }
                 // Player and dealer got equal ammount
                 else if ((dealerOutcome.dealerTotal == player.roundTotal && 
@@ -513,9 +503,24 @@ namespace BlackjackDealer
                     player.outcome != Player.PlayerOutcome.bust))
                 {
                     Console.WriteLine("\tYou got the same total as the dealer, so it\'s a push.");
+                    AwardWinningsToPlayer(players, 1, player);
                 }
 
                 DisplayContinuePrompt("continue");
+            }
+        }
+
+        static void AwardWinningsToPlayer(
+            List<Player> players, int winningsMultiplier, 
+            (string playerName, int roundTotal, int playerBet, Player.PlayerOutcome outcome) roundInfo)
+        {
+            foreach (Player player in players)
+            {
+                if (player.Name == roundInfo.playerName)
+                {
+                    player.Money += (roundInfo.playerBet * winningsMultiplier); //TODO
+                    break;
+                }
             }
         }
 
@@ -552,6 +557,7 @@ namespace BlackjackDealer
         /// Resets all of the cards in hands to zero
         /// </summary>
         /// <param name="players">the list of players</param>
+        /// <param name="dealer">the game's dealer</param>
         static void ClearAllHands(List<Player> players, Dealer dealer)
         {
             dealer.Cards.Clear();

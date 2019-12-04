@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlackjackDealer
 {
-    class PlayingCard
+    public class PlayingCard
     {
         #region ENUMS
 
