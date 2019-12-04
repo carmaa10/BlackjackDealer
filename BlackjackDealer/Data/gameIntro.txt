@@ -1,0 +1,7 @@
+﻿Alright, so here's the deal (pun intended).
+----------------------------------------------------------------------------------------------------
+To start off, there's one deck of 52 cards, and you'll be betting on those cards with a starting 
+amount of $500, and there will be a total of 5 rounds, that is unless both players go bankrupt 
+in that time. 
+
+Good luck, and have fun!

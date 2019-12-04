@@ -61,6 +61,9 @@
     <Content Include="Data\defaultRules.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\gameIntro.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\instructions.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

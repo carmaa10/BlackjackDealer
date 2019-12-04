@@ -1,33 +1,33 @@
-﻿Each participant attempts to beat the dealer by getting a count as close to 21 as possible, without* 
+﻿Each participant attempts to beat the dealer by getting a count as close to 21 as possible, without  
 going over 21.
 |
-Before the deal begins, each player places a bet, in chips, in front of them in the designated area.* 
-Minimum and maximum limits are established on the betting, and the general limits are from $2 to $500.*
+Before the deal begins, each player places a bet, in chips, in front of them in the designated area.  
+Minimum and maximum limits are established on the betting, and the general limits are from $2 to $500. 
 |
-When all the players have placed their bets, the dealer gives one card face up to each player in*
-rotation clockwise, and then one card face up to themselves. Another round of cards is then dealt* 
-face up to each player, but the dealer takes the second card face down. Thus, each player except*
-the dealer receives two cards face up, and the dealer receives one card face up and one card face down.* 
+When all the players have placed their bets, the dealer gives one card face up to each player in 
+rotation clockwise, and then one card face up to themselves. Another round of cards is then dealt  
+face up to each player, but the dealer takes the second card face down. Thus, each player except 
+the dealer receives two cards face up, and the dealer receives one card face up and one card face down.  
 |
-If a player's first two cards are an ace and a "ten-card" (a picture card or 10), giving a count*
-of 21 in two cards, that is a "blackjack." If any player has a blackjack and the dealer does not,* 
-the dealer immediately pays that player one and a half times the amount of their bet. If the dealer* 
-has a blackjack, they immediately collect the bets of all players who do not have a blackjack. If* 
-the dealer and another player both have blackjacks, the bet of that player is a stay-off (a tie),* 
+If a player's first two cards are an ace and a "ten-card" (a picture card or 10), giving a count 
+of 21 in two cards, that is a "blackjack." If any player has a blackjack and the dealer does not,  
+the dealer immediately pays that player one and a half times the amount of their bet. If the dealer  
+has a blackjack, they immediately collect the bets of all players who do not have a blackjack. If  
+the dealer and another player both have blackjacks, the bet of that player is a stay-off (a tie),  
 and the player takes back his chips.
 |
-The player to the left goes first and must decide whether to "stay" (not ask for another card) or*
-"hit" (ask for another card in an attempt to get closer to a count of 21, or even hit 21 exactly).* 
-Thus, a player may stay on the two cards originally dealt to them, or they may ask the dealer for* 
-additional cards, one at a time, until deciding to stay on the total (if it is 21 or under), or* 
-goes "bust" (if it is over 21). In the latter case, the player loses and the dealercollects the* 
-bet wagered. The dealer then turns to the next player to their left and serves them in the same* 
+The player to the left goes first and must decide whether to "stay" (not ask for another card) or 
+"hit" (ask for another card in an attempt to get closer to a count of 21, or even hit 21 exactly).  
+Thus, a player may stay on the two cards originally dealt to them, or they may ask the dealer for  
+additional cards, one at a time, until deciding to stay on the total (if it is 21 or under), or  
+goes "bust" (if it is over 21). In the latter case, the player loses and the dealercollects the  
+bet wagered. The dealer then turns to the next player to their left and serves them in the same  
 manner.
 |
-When the dealer has served every player, the dealers face-down card is turned up. If the total*
-is 17 or more, it must stay. If the total is 16 or under, they must take a card. The dealer* 
-must continue to take cards until the total is 17 or more, at which point the dealer must stay.* 
-If the dealer has an ace, and counting it as 11 would bring the total to 17 or more* 
-(but not over 21), the dealer must count the ace as 11 and stay. The dealer's decisions, then,* 
+When the dealer has served every player, the dealers face-down card is turned up. If the total 
+is 17 or more, it must stay. If the total is 16 or under, they must take a card. The dealer  
+must continue to take cards until the total is 17 or more, at which point the dealer must stay.  
+If the dealer has an ace, and counting it as 11 would bring the total to 17 or more  
+(but not over 21), the dealer must count the ace as 11 and stay. The dealer's decisions, then,  
 are automatic on all plays, whereas the player always has the option of taking one or more cards.
 
