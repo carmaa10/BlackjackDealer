@@ -38,7 +38,7 @@ namespace BlackjackDealer
         public string Name
         {
             get { return _name; }
-            set { _name = Name; }
+            set { _name = value; }
         }
 
         public int Money
@@ -50,13 +50,13 @@ namespace BlackjackDealer
         public List<PlayingCard> Cards
         {
             get { return _cards; }
-            set { _cards = Cards; }
+            set { _cards = value; }
         }
 
         public bool IsPlaying
         {
             get { return _isplaying; }
-            set { _isplaying = IsPlaying; }
+            set { _isplaying = value; }
         }
 
         //public int RoundBet

@@ -1,4 +1,4 @@
-﻿Spades|Ace|1
+﻿Spades|Ace|11
 Spades|2|2
 Spades|3|3
 Spades|4|4
@@ -11,7 +11,7 @@ Spades|10|10
 Spades|Jack|10
 Spades|Queen|10
 Spades|King|10
-Diamonds|Ace|1
+Diamonds|Ace|11
 Diamonds|2|2
 Diamonds|3|3
 Diamonds|4|4
@@ -24,7 +24,7 @@ Diamonds|10|10
 Diamonds|Jack|10
 Diamonds|Queen|10
 Diamonds|King|10
-Clubs|Ace|1
+Clubs|Ace|11
 Clubs|2|2
 Clubs|3|3
 Clubs|4|4
@@ -37,7 +37,7 @@ Clubs|10|10
 Clubs|Jack|10
 Clubs|Queen|10
 Clubs|King|10
-Hearts|Ace|1
+Hearts|Ace|11
 Hearts|2|2
 Hearts|3|3
 Hearts|4|4

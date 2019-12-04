@@ -304,15 +304,15 @@ namespace BlackjackDealer
                     DisplayContinuePrompt("try again");
                 }
 
-                if (playerBet > player.Money)
+                if (playerBet > player.Money || playerBet == 0)
                 {
                     validResponse = false;
-                    DisplayErrorMessage("You can\'t bet more than you have!");
+                    DisplayErrorMessage("You can\'t bet more than you have, and you can\'t bet zero. You have to bet something.");
                 }
 
             } while (!validResponse);
 
-            player.Money -= playerBet; // TODO
+            player.Money -= playerBet;
             //player.RoundBet = playerBet;
             roundOutcome.playerBet = playerBet;
 
@@ -321,6 +321,17 @@ namespace BlackjackDealer
                 Console.Clear();
 
                 playerCardsTotal = GetCardValueTotal(player.Cards);
+
+                if (playerCardsTotal > 21)
+                {
+                    foreach (PlayingCard card in player.Cards)
+                    {
+                        if (card.CardRank == PlayingCard.Rank.Ace)
+                        {
+                            card.CardValue -= 10;
+                        }
+                    }
+                }
 
                 DisplayScreenHeader(player.Name);
 
@@ -518,7 +529,7 @@ namespace BlackjackDealer
             {
                 if (player.Name == roundInfo.playerName)
                 {
-                    player.Money += (roundInfo.playerBet * winningsMultiplier); //TODO
+                    player.Money += (roundInfo.playerBet * winningsMultiplier);
                     break;
                 }
             }
@@ -595,7 +606,6 @@ namespace BlackjackDealer
                 DisplayScreenHeader("Instructions");
 
                 userResponse = ConsoleHelper.MultipleChoice(true, 1, 0, 0, "Object of the Game", "Betting", "The Deal", "Getting a Blackjack", "The Play", "The Dealer\'s Play");
-                userResponse += 1; // Imporoving program readability so that the first options is option #1
                 switch (userResponse)
                 {
                     case 0:
