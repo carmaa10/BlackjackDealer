@@ -193,8 +193,11 @@ namespace BlackjackDealer
 
                 dealerOutcome = DisplayDealerScreen(players, dealer, cardDeck, discard, random, playerRoundInfo);
 
-                DisplayRoundOutcome(playerRoundInfo, dealerOutcome, players);
+                DisplayRoundOutcome(playerRoundInfo, dealerOutcome, players, numberRounds);
                 //DisplayContinuePrompt("this is only here so i can set a breakpoint");
+
+                playerRoundInfo.Clear();
+
                 ClearAllHands(players, dealer);
             }
 
@@ -455,12 +458,71 @@ namespace BlackjackDealer
         static void DisplayRoundOutcome(
             List<(string playerName, int roundTotal, int playerBet, Player.PlayerOutcome outcome)> playerRoundInfo,
             (string name, int dealerTotal, Player.PlayerOutcome outcome) dealerOutcome,
-            List<Player> players)
+            List<Player> players,
+            int numberRounds)
         {
             DisplayScreenHeader("Round Outcome");
 
             Console.WriteLine($"\tThe {dealerOutcome.name} ended up with a point value of {dealerOutcome.dealerTotal}, so the " +
                     $"\n\t{dealerOutcome.name} {dealerOutcome.outcome}ed");
+
+            //for (int i = numberRounds; i > 0; i--)
+            //{
+            //    Console.Write("\n\n\t");
+            //    RepeatCharacter(100, "-");
+            //    Console.WriteLine($"\n\t{playerRoundInfo[i].playerName}\n");
+
+            //    // Dealer gets a blackjack
+            //    if (dealerOutcome.outcome == Player.PlayerOutcome.blackjack)
+            //    {
+            //        Console.WriteLine("\tThe dealer got a blackjack, so everyone loses. ");
+            //        break;
+            //    }
+            //    // Player got a blackjack
+            //    else if (playerRoundInfo[i].outcome == Player.PlayerOutcome.blackjack &&
+            //        dealerOutcome.outcome != Player.PlayerOutcome.blackjack)
+            //    {
+            //        Console.WriteLine("\tYou got a blackjack");
+            //        AwardWinningsToPlayer(players, 3, playerRoundInfo[i]);
+            //    }
+            //    // Dealer busted
+            //    else if (dealerOutcome.outcome == Player.PlayerOutcome.bust &&
+            //        playerRoundInfo[i].outcome != Player.PlayerOutcome.bust && playerRoundInfo[i].outcome != Player.PlayerOutcome.blackjack)
+            //    {
+            //        Console.WriteLine("\tThe dealer busted, so you win!");
+            //        AwardWinningsToPlayer(players, 2, playerRoundInfo[i]);
+            //    }
+            //    // Player busted
+            //    else if (playerRoundInfo[i].outcome == Player.PlayerOutcome.bust)
+            //    {
+            //        Console.WriteLine($"\tYou busted at {playerRoundInfo[i].roundTotal} points, so you lose.");
+            //    }
+            //    // Dealer has more points than the player
+            //    else if (dealerOutcome.dealerTotal > playerRoundInfo[i].roundTotal &&
+            //        dealerOutcome.outcome != Player.PlayerOutcome.blackjack && playerRoundInfo[i].outcome
+            //        != Player.PlayerOutcome.bust)
+            //    {
+            //        Console.WriteLine("\tThe dealer got a higher score than you, so you lose this round.");
+            //    }
+            //    // Player got more points than the dealer
+            //    else if ((dealerOutcome.dealerTotal < playerRoundInfo[i].roundTotal &&
+            //        dealerOutcome.outcome != Player.PlayerOutcome.blackjack &&
+            //        playerRoundInfo[i].outcome != Player.PlayerOutcome.bust))
+            //    {
+            //        Console.WriteLine("\tYou got a higher total than the dealer, so you win this round!");
+            //        AwardWinningsToPlayer(players, 2, playerRoundInfo[i]);
+            //    }
+            //    // Player and dealer got equal ammount
+            //    else if ((dealerOutcome.dealerTotal == playerRoundInfo[i].roundTotal &&
+            //        dealerOutcome.outcome != Player.PlayerOutcome.blackjack &&
+            //        playerRoundInfo[i].outcome != Player.PlayerOutcome.bust))
+            //    {
+            //        Console.WriteLine("\tYou got the same total as the dealer, so it\'s a push.");
+            //        AwardWinningsToPlayer(players, 1, playerRoundInfo[i]);
+            //    }
+
+            //    DisplayContinuePrompt("continue");
+            //}
 
             foreach ((string playerName, int roundTotal, int playerBet, Player.PlayerOutcome outcome) player in playerRoundInfo)
             {
